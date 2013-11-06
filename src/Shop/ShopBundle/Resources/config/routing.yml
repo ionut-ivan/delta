@@ -21,7 +21,7 @@ shop_shop_orders:
     pattern: /orders/
     defaults: { _controller: ShopShopBundle:Dashboard:show_orders}
     requirements:
-        _method: GET
+        _method: GET|POST
         
 shop_shop_order:
     pattern: /orders/ordid={ordid}
@@ -39,6 +39,12 @@ shop_shop_shipping:
 shop_shop_billing:
     pattern: /billing
     defaults: { _controller: ShopShopBundle:Dashboard:show_billing}
+    requirements:
+        _method: GET|POST
+        
+shop_shop_review  :
+    pattern: /review/{ordid}
+    defaults: { _controller: ShopShopBundle:Dashboard:viewOrder,ordid : "none"}
     requirements:
         _method: GET|POST
         
@@ -73,5 +79,100 @@ shop_shop_updateCart:
   defaults: {_controller: ShopShopBundle:Cart:updateCart}
   requirements:
        _method:  POST
+       
+shop_shop_checkout1:
+  pattern: /checkout/billing
+  defaults: {_controller: ShopShopBundle:Checkout:checkoutBilling}
+  requirements:
+       _method:  GET|POST
+
+shop_shop_checkout2:
+  pattern: /checkout/shipping
+  defaults: {_controller: ShopShopBundle:Checkout:checkoutShipping}
+  requirements:
+       _method:  GET|POST
+
+shop_shop_checkout3:
+  pattern: /checkout/shippingmethod
+  defaults: {_controller: ShopShopBundle:Checkout:shippingMethod}
+  requirements:
+       _method:  GET|POST
+
+shop_shop_checkout4:
+  pattern: /checkout/payment
+  defaults: {_controller: ShopShopBundle:Checkout:paymentMethod}
+  requirements:
+       _method:  GET|POST
+
+shop_shop_checkout5:
+  pattern: /checkout/review
+  defaults: {_controller: ShopShopBundle:Checkout:review}
+  requirements:
+       _method:  GET|POST
+       
+shop_shop_adminuserlist:
+  pattern: /admin
+  defaults: {_controller: ShopShopBundle:Admin:userList}
+
+shop_shop_disableuser:
+  pattern: /disableuser/{id}
+  defaults: {_controller: ShopShopBundle:Admin:disableUser}
+  requirements:
+    _method: GET|POST
+    id: \d+
+    
+shop_shop_enableuser:
+  pattern: /enableuser/{id}
+  defaults: {_controller: ShopShopBundle:Admin:enableUser}
+  requirements:
+    _method: GET|POST
+    id: \d+
+    
+shop_shop_edituser:
+  pattern: /edituser/{id}
+  defaults: {_controller: ShopShopBundle:AdminEditUser:editUser}
+  requirements:
+    _method: GET|POST
+    id: \d+
+
+shop_shop_adminproductlist:
+  pattern: /productlist
+  defaults: {_controller: ShopShopBundle:Admin:productList}
+  
+shop_shop_adminproductsearch:
+  pattern: /search
+  defaults: {_controller: ShopShopBundle:Admin:productSearch}
+  requirements:
+    _method: GET|POST
+  
+shop_shop_disableproduct:
+  pattern: /disableproduct/{id}
+  defaults: {_controller: ShopShopBundle:Admin:disableProduct}
+  requirements:
+    _method: GET|POST
+    id: \d+
+
+shop_shop_enableproduct:
+  pattern: /enableproduct/{id}
+  defaults: {_controller: ShopShopBundle:Admin:enableProduct}
+  requirements:
+    _method: GET|POST
+    id: \d+
+    
+shop_shop_editproduct:
+  pattern: /editproduct/{id}
+  defaults: {_controller: ShopShopBundle:Admin:editProduct}
+  requirements:
+    _method: GET|POST
+    id: \d+
+
+shop_shop_addproduct:
+  pattern: /addproduct
+  defaults: {_controller: ShopShopBundle:Admin:addProduct}
+  requirements:
+    _method: GET|POST
 
   
+shop_shop_adminorderlist:
+  pattern: /orderlist
+  defaults: {_controller: ShopShopBundle:Admin:orderList}

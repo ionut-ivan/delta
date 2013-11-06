@@ -9,7 +9,7 @@ security:
 
     providers:
         fos_userbundle:
-            id: fos_user.user_provider.username
+            id: fos_user.user_manager
         in_memory:
             memory:
                 users:
@@ -17,13 +17,25 @@ security:
                     admin: { password: adminpass, roles: [ 'ROLE_ADMIN' ] }
 
     firewalls:
+
+          
+      #login for user
         main:
             pattern: ^/
             form_login:
                 provider: fos_userbundle
+                login_path: /
+                use_forward: false
+                success_handler: shop_shop_security.component.authentication.handler.login_success_handler
                 csrf_provider: form.csrf_provider
-            logout:       true
+            logout:
+              path: /logout
+              target: /
+              success_handler: shop_shop_security.component.authentication.handler.logout_success_handler
+              #invalidate_session: true da warning, la refresh dispare. Aparent problema de php, trebuie upgrade la minim 5.4.11?
+              invalidate_session: false
             anonymous:    true
+
         dev:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
             security: false

@@ -5,6 +5,7 @@ namespace Shop\ShopBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * @ORM\Entity(repositoryClass="Shop\ShopBundle\Entity\Repository\ProductRepository")
@@ -17,7 +18,7 @@ class Product {
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
-    */
+     */
     private $id;
 
     /**
@@ -80,8 +81,9 @@ class Product {
      * @ORM\Column(type="string")
      */
     private $filename;
-    
     private $quantity;
+    private $temp;
+    private $file;
 
     /**
      * Get id
@@ -364,9 +366,104 @@ class Product {
     public function getQuantity() {
         return $this->quantity;
     }
-    public static function loadValidatorMetadata(ClassMetadata $metadata) {
-        $metadata->addPropertyConstraint('quantity', new Assert\Type(array('type' => 'integer', 'message' => 'the value {{value}} is not a number')));
 
-        $metadata->addPropertyConstraint('quantity', new Assert\GreaterThan(array('value' => 0, 'message' => 'cannot order a negative value')));
+    public static function loadValidatorMetadata(ClassMetadata $metadata) {
+//        $metadata->addPropertyConstraint('quantity', new Assert\Type(array('type' => 'integer', 'message' => 'the value {{value}} is not a number')));
+//        $metadata->addPropertyConstraint('quantity', new Assert\GreaterThan(array('value' => 0, 'message' => 'cannot order a negative value')));
+//        $metadata->addPropertyConstraint('title', new Assert\NotBlank());
+//        $metadata->addPropertyConstraint('short_description', new Assert\NotBlank());
+//        $metadata->addPropertyConstraint('price', new Assert\NotBlank());
+//        $metadata->addPropertyConstraint('description', new Assert\NotBlank());
+//        $metadata->addPropertyConstraint('stock', new Assert\NotBlank());
+//        $metadata->addPropertyConstraint('short_description', new Assert\LessThanOrEqual(array('value' => 50, 'message' => 'too long, 50 char. max')));
+//        $metadata->addPropertyConstraint('short_description', new Assert\LessThanOrEqual(array('value' => 500, 'message' => 'too long, 500 char. max')));
+//        $metadata->addPropertyConstraint('filename', new Assert\File(array(
+//            'maxSize' => '2M',
+//            'mimeTypes' => array(
+//                'image/jpg',
+//                'image/jpeg',
+//                'image/gif',
+//            ),
+//            'mimeTypesMessage' => 'Please upload a valid JPG or GIF',
+//        )));
     }
+
+    /**
+     * Sets file.
+     *
+     * @param UploadedFile $file
+     */
+    public function setFile(UploadedFile $file = null) {
+        $this->file = $file;
+        // check if we have an old image path
+        if (isset($this->path)) {
+            // store the old name to delete after the update
+            $this->temp = $this->path;
+            $this->path = null;
+        } else {
+            $this->path = 'initial';
+        }
+    }
+
+    public function getFile() {
+        return $this->file;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function preUpload() {
+        if (null !== $this->getFile()) {
+            // do whatever you want to generate a unique name
+            $filename = sha1(uniqid(mt_rand(), true));
+            $this->path = $filename . '.' . $this->getFile()->guessExtension();
+        }
+    }
+
+    /**
+     * @ORM\PostPersist()
+     * @ORM\PostUpdate()
+     */
+    public function upload() {
+        if (null === $this->getFile()) {
+            return;
+        }
+
+        // if there is an error when moving the file, an exception will
+        // be automatically thrown by move(). This will properly prevent
+        // the entity from being persisted to the database on error
+        $this->getFile()->move($this->getUploadRootDir(), $this->path);
+
+        // check if we have an old image
+        if (isset($this->temp)) {
+            // delete the old image
+            unlink($this->getUploadRootDir() . '/' . $this->temp);
+            // clear the temp image path
+            $this->temp = null;
+        }
+        $this->file = null;
+    }
+    
+     protected function getUploadRootDir()
+    {
+        // the absolute directory path where uploaded
+        // documents should be saved
+        return __DIR__.'/home/iivan/Sites/delta/web/'.$this->getUploadDir();
+    }
+    protected function getUploadDir()
+    {
+        // get rid of the __DIR__ so it doesn't screw up
+        // when displaying uploaded doc/image in the view.
+        return 'bundles/shopshop/image';
+    }
+    /**
+     * @ORM\PostRemove()
+     */
+    public function removeUpload() {
+        if ($file = $this->getAbsolutePath()) {
+            unlink($file);
+        }
+    }
+
 }

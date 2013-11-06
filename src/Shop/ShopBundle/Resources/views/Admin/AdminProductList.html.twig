@@ -1,0 +1,145 @@
+{%extends '::adminbase.html.twig'%}
+{%block container%}
+<!--  start page-heading -->
+<div id="page-heading">
+    <h1>Product list</h1>
+</div>
+<!-- end page-heading -->
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
+    <tr>
+        <th rowspan="3" class="sized"><img src="/images/shared/side_shadowleft.jpg" width="20" height="300" alt="" /></th>
+        <th class="topleft"></th>
+        <td id="tbl-border-top">&nbsp;</td>
+        <th class="topright"></th>
+        <th rowspan="3" class="sized"><img src="/images/shared/side_shadowright.jpg" width="20" height="300" alt="" /></th>
+    </tr>
+    <tr>
+        <td id="tbl-border-left"></td>
+        <td>
+            <!--  start content-table-inner ...................................................................... START -->
+            <div id="content-table-inner">
+                
+                    <div class="filter-product">
+                        <!-- start filter form -->
+                        <table border="0" cellpadding="0" cellspacing="0"  id="id-form">
+                            <form action="{{path('shop_shop_adminproductsearch')}}" {{ form_enctype(form) }} method="post"> 
+                            <tr>
+                                <th valign="top">Product name:</th>
+                                    <td> {{ form_widget(form.title) }} </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th valign="top">Category:</th>
+                               <td> {{ form_widget(form.category) }} </td>
+                                <td></td>
+                            </tr>
+                            
+                            
+                            <tr>
+                                <th valign="top">Out of stock:</th>
+                                <td> {{ form_widget(form.stock) }} </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <td valign="top">
+                                    {{ form_widget(form.submit) }}
+                                    <input type="submit" value="{{path('shop_shop_adminproductlist')}}" class="form-reset"  />
+                                </td>
+                                <td></td>
+                            </tr>
+                            </form>
+                        
+                        </table>
+                        <!--  end filter form  -->
+                    </div>
+                    <!--  start table-content  -->
+                    <div id="table-content">
+                        <!--  start product-table ..................................................................................... -->
+                            <table border="0" width="100%" cellpadding="0" cellspacing="0" id="product-table">
+                                <tr>
+                                    <th class="table-header-repeat line-left ">{{ knp_pagination_sortable(products, 'Id', 'p.id') }}</th>
+                                    <th class="table-header-repeat line-left minwidth-1">{{ knp_pagination_sortable(products, 'Title', 'p.title') }}</th>
+                                    <th class="table-header-repeat line-left minwidth-1">{{ knp_pagination_sortable(products, 'Category', 'p.id') }}>Category</th>
+                                    <th class="table-header-repeat line-left minwidth-1">{{ knp_pagination_sortable(products, 'Description', 'p.short_description') }}>Short description</th>
+                                    <th class="table-header-repeat line-left minwidth-1">{{ knp_pagination_sortable(products, 'Price', 'p.price') }}>Price</th>
+                                    <th class="table-header-repeat line-left minwidth-1">{{ knp_pagination_sortable(products, 'Stock', 'p.stock') }}>Stock</th>
+                                    <th class="table-header-repeat line-left minwidth-1">{{ knp_pagination_sortable(products, 'Active', 'p.active') }}>Active</th>
+                                    <th class="table-header-options line-left"><a href="">Options</a></th>
+                                </tr>
+                                {{products.getTotalItemCount}} Products
+                                {%for product in products%}
+                                    {%if loop.index is odd%}
+                                        <tr>
+                                            <td>{{product.id}}</td>
+                                            <td>{{product.title}}</td>
+                                            <td>{{product.getCategoryId.categoryName}}</td>
+                                            <td>{{product.getShortDescription}} </td>
+                                            <td>{{product.price}}</td>
+                                            <td>{{product.stock }}</td>
+                                            <td>{{product.active }}</td>
+                                            <td class="options-width">
+                                                <a href="{{path('shop_shop_editproduct',{'id' : product.id})}}" title="Edit" class="icon-1 info-tooltip"></a>
+                                                {%if product.active == 1%}
+                                                <a href="{{path('shop_shop_disableproduct', {'id' : product.id })}}" title="Delete product" class="icon-2 info-tooltip"></a>
+                                                {%else%}
+                                                    <a href="{{path('shop_shop_enableproduct', {'id' : product.id })}}" title="Restore product" class="icon-5 info-tooltip"></a>
+                                                 {%endif%}
+                                            </td>
+                                        </tr>
+                                    {%else%}
+                                        <tr class="alternate-row">
+                                            
+                                            <td>{{product.id}}</td>
+                                            <td>{{product.title}}</td>
+                                            <td>{{product.getCategoryId.categoryName}}</td>
+                                            <td>{{product.getShortDescription}} </td>
+                                            <td>{{product.price}}</td>
+                                            <td>{{product.stock }}</td>
+                                            <td>{{product.active }}</td>
+                                            <td class="options-width">
+                                                <a href="{{path('shop_shop_editproduct',{'id' : product.id})}}" title="Edit" class="icon-1 info-tooltip"></a>
+                                                {%if product.active == 1%}
+                                                <a href="{{path('shop_shop_disableproduct', {'id' : product.id })}}" title="Delete product" class="icon-2 info-tooltip"></a>
+                                                {%else%}
+                                                    <a href="{{path('shop_shop_enableproduct', {'id' : product.id })}}" title="Restore product" class="icon-5 info-tooltip"></a>
+                                                 {%endif%}
+                                            </td>
+                                        </tr>
+                                        {%endif%}
+                              {%endfor%}
+                            </table>
+                            <!--  end product-table................................... --> 
+                       
+                    </div>
+                    <!--  end content-table  -->
+
+                    <!--  start paging..................................................... -->
+                  
+                        <table border="0" cellpadding="0" cellspacing="0" id="paging-table">
+                            <tr>
+                            <td>
+                                {{ knp_pagination_render(products) }}
+                            </td>
+                        </tr>
+                        </table>
+
+                    
+                    <!--  end paging................ -->
+
+                    <div class="clear"></div>
+
+            </div>
+            
+            <!--  end content-table-inner ............................................END  -->
+        </td>
+        <td id="tbl-border-right"></td>
+    </tr>
+    <tr>
+        <th class="sized bottomleft"></th>
+        <td id="tbl-border-bottom">&nbsp;</td>
+        <th class="sized bottomright"></th>
+    </tr>
+</table>
+{%endblock%}
