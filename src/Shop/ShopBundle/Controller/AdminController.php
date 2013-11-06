@@ -4,10 +4,10 @@ namespace Shop\ShopBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Shop\ShopBundle\Form\AdminProductSearchType;
 use Shop\ShopBundle\Form\AdminEditProductType;
 use Shop\ShopBundle\Form\AdminAddProductType;
-
 
 class AdminController extends Controller {
 
@@ -49,15 +49,15 @@ class AdminController extends Controller {
         return $this->redirect($this->getRequest()->headers->get("referer"));
     }
 
-    public function editUserAction($id) {
-
-        $em = $this->getDoctrine()
-                ->getManager();
-
-        $user = $em->getRepository('ShopShopBundle:User')->find($id);
-
-        return $this->render('FOSUserBundle:Profile:edit_content_admin.html.twig');
-    }
+//    public function editUserAction($id) {
+//
+//        $em = $this->getDoctrine()
+//                ->getManager();
+//
+//        $user = $em->getRepository('ShopShopBundle:User')->find($id);
+//
+//        return $this->render('FOSUserBundle:Profile:edit_content_admin.html.twig');
+//    }
 
     public function productListAction() {
         $em = $this->getDoctrine()
@@ -123,20 +123,27 @@ class AdminController extends Controller {
                 ->getManager();
         $message = '';
         $product = $em->getRepository('ShopShopBundle:Product')->find($id);
+//        $validator = $this->get('validator');
+//        $errors = $validator->validate($product);
+//        var_dump($errors);
+//        die();
+
         $form = $this->createForm(new AdminEditProductType, $product);
         if ('POST' === $request->getMethod()) {
             $form->bind($request);
-            $product->setPath('/public/image/');
-            if ($form->getData()->getFilename() != null) {
-                $product->setFilename($form->getData()->getFilename()->getClientOriginalName());
+            if ($form->isValid()) {
+                $product->setPath('/public/image/');
+                if ($form->getData()->getFilename() != null) {
+                    $product->setFilename($form->getData()->getFilename()->getClientOriginalName());
+                    $dir = '/web/bundles/shopshop/image';
+                    $form['filename']->getData()->move($dir, $form['filename']->getData()->getClientOriginalName());
+                }
             }
-            $dir = '/home/iivan/Sites/delta/web/bundles/shopshop/image';
-            $form['filename']->getData()->move($dir, $form['filename']->getData()->getClientOriginalName());
+
             $em->flush();
-       }
+        }
         return $this->render('ShopShopBundle:Admin:AdminEditProduct.html.twig', array('form' => $form->createView(), 'id' => $id, 'message' => $message));
     }
-
 
     public function addProductAction(Request $request) {
 
@@ -146,20 +153,20 @@ class AdminController extends Controller {
         $form = $this->createForm(new AdminAddProductType, $product);
         if ('POST' === $request->getMethod()) {
             $form->bind($request);
-            if ($form->getData()->getStock() > 0) {
-                $product->setActive(1);
-            } else {
-                $product->setActive(0);
+            if ($form->isValid()) {
+                if ($form->getData()->getStock() > 0) {
+                    $product->setActive(1);
+                } else {
+                    $product->setActive(0);
+                }
+                $product->setPath('/public/image/');
+                if ($form->getData()->getFilename() != null) {
+                    $product->setFilename($form->getData()->getFilename()->getClientOriginalName());
+                    $dir = '/home/iivan/Sites/delta/web/bundles/shopshop/image';
+                    $form['filename']->getData()->move($dir, $form['filename']->getData()->getClientOriginalName());
+                }
             }
-            $product->setPath('/public/image/');
-            if ($form->getData()->getFilename() != null) {
-                $product->setFilename($form->getData()->getFilename()->getClientOriginalName());
-            }
-            $dir = '/home/iivan/Sites/delta/web/bundles/shopshop/image';
-            $form['filename']->getData()->move($dir, $form['filename']->getData()->getClientOriginalName());
-
-            $em->flush();
-            $product->setAuthorId(rand(1, 10));
+            $product->setAuthorId(1);
             $em->persist($product);
             $em->flush();
         }

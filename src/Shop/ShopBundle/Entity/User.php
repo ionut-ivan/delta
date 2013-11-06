@@ -18,6 +18,7 @@ class User extends BaseUser {
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+
      */
     protected $id;
 
@@ -65,22 +66,19 @@ class User extends BaseUser {
      * )
      */
     protected $mobile;
-    
-     /**
+
+    /**
      * @ORM\ManyToOne(targetEntity="Address")
      * @ORM\JoinColumn(name="shipping_address", referencedColumnName="id")
      */
     private $shippingAddress;
-    
-     /**
+
+    /**
      * @ORM\ManyToOne(targetEntity="Address")
      * @ORM\JoinColumn(name="billing_address", referencedColumnName="id")
      */
-    
     private $billingAddress;
-    
 
-    
     public function __construct() {
         parent::__construct();
         // your own logic
@@ -94,7 +92,7 @@ class User extends BaseUser {
     public function getId() {
         return $this->id;
     }
-    
+
     /**
      * Set id
      *
@@ -103,7 +101,7 @@ class User extends BaseUser {
      */
     public function setId($int) {
         $this->id = $int;
-        
+
         return $this->id;
     }
 
@@ -197,10 +195,9 @@ class User extends BaseUser {
      * @param \Shop\ShopBundle\Entity\Address $shippingAddress
      * @return User
      */
-    public function setShippingAddress(\Shop\ShopBundle\Entity\Address $shippingAddress = null)
-    {
+    public function setShippingAddress(\Shop\ShopBundle\Entity\Address $shippingAddress = null) {
         $this->shippingAddress = $shippingAddress;
-    
+
         return $this;
     }
 
@@ -209,8 +206,7 @@ class User extends BaseUser {
      *
      * @return \Shop\ShopBundle\Entity\Address 
      */
-    public function getShippingAddress()
-    {
+    public function getShippingAddress() {
         return $this->shippingAddress;
     }
 
@@ -220,10 +216,9 @@ class User extends BaseUser {
      * @param \Shop\ShopBundle\Entity\Address $billingAddress
      * @return User
      */
-    public function setBillingAddress(\Shop\ShopBundle\Entity\Address $billingAddress = null)
-    {
+    public function setBillingAddress(\Shop\ShopBundle\Entity\Address $billingAddress = null) {
         $this->billingAddress = $billingAddress;
-    
+
         return $this;
     }
 
@@ -232,8 +227,7 @@ class User extends BaseUser {
      *
      * @return \Shop\ShopBundle\Entity\Address 
      */
-    public function getBillingAddress()
-    {
+    public function getBillingAddress() {
         return $this->billingAddress;
     }
 

@@ -31,12 +31,12 @@ class ProfileFormType extends BaseType {
             'required' => true,
             'data' => '0'
         ));
-        $builder->add('roles', 'choice', array(
-//            'choices'=> array('choice'=>$user->getRoles()),
-            'choices' => array('Admin', 'User'),
-            'expanded' => true,
-            'multiple' => false,
-            ));
+//        $builder->add('roles', 'choice', array(
+////            'choices'=> array('choice'=>$user->getRoles()),
+//            'choices' => array('Admin', 'User'),
+//            'expanded' => true,
+//            'multiple' => true,
+//            ));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver) {

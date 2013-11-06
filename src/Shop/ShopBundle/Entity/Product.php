@@ -6,6 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Type;
 
 /**
  * @ORM\Entity(repositoryClass="Shop\ShopBundle\Entity\Repository\ProductRepository")
@@ -368,24 +371,24 @@ class Product {
     }
 
     public static function loadValidatorMetadata(ClassMetadata $metadata) {
-//        $metadata->addPropertyConstraint('quantity', new Assert\Type(array('type' => 'integer', 'message' => 'the value {{value}} is not a number')));
-//        $metadata->addPropertyConstraint('quantity', new Assert\GreaterThan(array('value' => 0, 'message' => 'cannot order a negative value')));
-//        $metadata->addPropertyConstraint('title', new Assert\NotBlank());
-//        $metadata->addPropertyConstraint('short_description', new Assert\NotBlank());
-//        $metadata->addPropertyConstraint('price', new Assert\NotBlank());
-//        $metadata->addPropertyConstraint('description', new Assert\NotBlank());
-//        $metadata->addPropertyConstraint('stock', new Assert\NotBlank());
-//        $metadata->addPropertyConstraint('short_description', new Assert\LessThanOrEqual(array('value' => 50, 'message' => 'too long, 50 char. max')));
-//        $metadata->addPropertyConstraint('short_description', new Assert\LessThanOrEqual(array('value' => 500, 'message' => 'too long, 500 char. max')));
-//        $metadata->addPropertyConstraint('filename', new Assert\File(array(
-//            'maxSize' => '2M',
-//            'mimeTypes' => array(
-//                'image/jpg',
-//                'image/jpeg',
-//                'image/gif',
-//            ),
-//            'mimeTypesMessage' => 'Please upload a valid JPG or GIF',
-//        )));
+        $metadata->addPropertyConstraint('title', new NotBlank());
+        $metadata->addPropertyConstraint('short_description', new NotBlank());
+        $metadata->addPropertyConstraint('price', new NotBlank());
+        $metadata->addPropertyConstraint('price', new Type(array('type'    => 'integer')));
+        $metadata->addPropertyConstraint('description', new NotBlank());
+        $metadata->addPropertyConstraint('stock', new NotBlank());
+        $metadata->addPropertyConstraint('stock', new Type(array('type'    => 'integer')));
+        $metadata->addPropertyConstraint('short_description', new Length(array('max'=> 50)));
+        $metadata->addPropertyConstraint('short_description', new Length(array('max'=> 500)));
+        $metadata->addPropertyConstraint('filename', new Assert\File(array(
+            'maxSize' => '5M',
+            'mimeTypes' => array(
+                'image/jpg',
+                'image/jpeg',
+                'image/gif',
+            ),
+            'mimeTypesMessage' => 'Please upload a valid JPG or GIF',
+        )));
     }
 
     /**
@@ -444,19 +447,19 @@ class Product {
         }
         $this->file = null;
     }
-    
-     protected function getUploadRootDir()
-    {
+
+    protected function getUploadRootDir() {
         // the absolute directory path where uploaded
         // documents should be saved
-        return __DIR__.'/home/iivan/Sites/delta/web/'.$this->getUploadDir();
+        return __DIR__ . '/home/iivan/Sites/delta/web/' . $this->getUploadDir();
     }
-    protected function getUploadDir()
-    {
+
+    protected function getUploadDir() {
         // get rid of the __DIR__ so it doesn't screw up
         // when displaying uploaded doc/image in the view.
         return 'bundles/shopshop/image';
     }
+
     /**
      * @ORM\PostRemove()
      */

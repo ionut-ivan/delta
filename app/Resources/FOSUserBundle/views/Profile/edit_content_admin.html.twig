@@ -25,8 +25,11 @@
                                     <input type="hidden" name="backlink" value="">
                                     <tr>
                                         <th valign="top">Username:</th>
+                                        
                                         <td> {{ form_widget(form.username, { 'attr': {'class': 'input-text required-entry'} }) }}
                                         </td>
+                                        
+                                           {# <td> <input type="text" name="lastName" value="{{user.username}}" class="input-text"/> </td> #}
                                         
                                             <td>
                                                 <div class="error-left"></div>
@@ -38,9 +41,11 @@
                                     </tr>
                                     <tr>
                                         <th valign="top">First Name:</th>
+                                        
                                         <td>{{ form_widget(form.firstName, { 'attr': {'class': 'input-text required-entry'} }) }}
                                         </td>
-                                       
+                                        
+                                           {# <td><input type="text" name="lastName" value="{{user.firstName}}"class="input-text"/></td> #}
                                             <td>
                                                 <div class="error-left"></div>
                                                 <div class="error-inner">
@@ -50,7 +55,21 @@
                                     </tr>
                                     <tr>
                                         <th valign="top">Last Name:</th>
+                                        
                                         <td> {{ form_widget(form.lastName, { 'attr': {'class': 'input-text required-entry'} }) }}
+                                        </td>
+                                        
+                                          {#<td> <input type="text" name="lastName" value="{{user.lastName}}"class="input-text"/> </td> #}
+                                        
+                                            <td>
+                                                <div class="error-left"></div>
+                                                <div class="error-inner">.</div>
+                                            </td>
+                                       
+                                    </tr>
+                                   {#  <tr>
+                                        <th valign="top">Role:</th>
+                                       <td> {{ form_widget(form.roles, { 'attr': {'class': 'input-text required-entry'} }) }} 
                                         </td>
                                         
                                             <td>
@@ -59,16 +78,11 @@
                                             </td>
                                        
                                     </tr>
+                                    #}
                                     <tr>
                                         <th valign="top">Role:</th>
-                                        <td> {{ form_widget(form.roles, { 'attr': {'class': 'input-text required-entry'} }) }}
-                                        </td>
-                                        
-                                            <td>
-                                                <div class="error-left"></div>
-                                                <div class="error-inner">.</div>
-                                            </td>
-                                       
+                                       <td><input type="radio" name="role_choice" value="admin" class= "input-box"/>Admin
+                                        <input type="radio" name="role_choice" value="user" class= "input-box"/>User</td>
                                     </tr>
                                     <th>&nbsp;</th>
                                     <td valign="top">
